@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panda Express Associate Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --panda-red: #D2232A;
+            --panda-dark-red: #A31A20;
+            --panda-black: #1A1A1A;
+            --panda-light: #F4F4F4;
+            --panda-white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--panda-light);
+            color: var(--panda-black);
+        }
+
+        .font-header {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Custom Pattern Background for the Shift Card */
+        .panda-pattern {
+            background-color: var(--panda-red);
+            /* Creating a subtle geometric pattern using CSS gradients instead of external images for better reliability */
+            background-image: radial-gradient(circle at 100% 100%, rgba(255,255,255,0.08) 0%, transparent 20%), 
+                              radial-gradient(circle at 0% 0%, rgba(0,0,0,0.15) 0%, transparent 20%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Subtle text watermark effect */
+        .panda-pattern::before {
+            content: "ORANGE CHICKEN CHOW MEIN";
+            position: absolute;
+            top: 20px;
+            right: -40px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5rem;
+            font-weight: 800;
+            color: rgba(0,0,0,0.08);
+            transform: rotate(-10deg);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--panda-black);
+            color: white;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background-color: black;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            transition: all 0.2s;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .modal-enter-active {
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 200ms ease-out, transform 200ms ease-out;
+        }
+        .modal-exit {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .modal-exit-active {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 200ms ease-in, transform 200ms ease-in;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-[#D2232A] flex items-center justify-center text-white">
+                    <i class="fas fa-bowl-rice text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-header text-xl font-bold uppercase tracking-wide text-[#D2232A]">Associate Hub</h1>
+                    <p class="text-xs text-gray-500 font-semibold">Welcome, Team Member</p>
+                </div>
+            </div>
+            <button class="w-8 h-8 rounded-full bg-[#EAEAEA] flex items-center justify-center text-[#1A1A1A]">
+                <i class="fas fa-bell"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 mt-6 space-y-6">
+
+        <button onclick="openAvailableShifts()" class="w-full bg-white border-2 border-[#1A1A1A] rounded-xl p-4 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow group">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-[#EAEAEA] text-[#1A1A1A] flex items-center justify-center group-hover:bg-[#1A1A1A] group-hover:text-white transition-colors">
+                    <i class="fas fa-plus text-lg"></i>
+                </div>
+                <div class="text-left">
+                    <h2 class="font-bold text-lg leading-tight">AVAILABLE SHIFTS</h2>
+                    <p class="text-sm text-gray-600">2 shifts near you</p>
+                </div>
+            </div>
+            <span class="text-[#D2232A] font-bold text-sm">VIEW</span>
+        </button>
+
+        <section>
+            <div class="flex items-center gap-2 mb-3 text-[#D2232A]">
+                <i class="fas fa-fire"></i>
+                <h2 class="font-bold text-lg uppercase font-header">Manage Your Shift</h2>
+            </div>
+
+            <div class="panda-pattern rounded-2xl p-6 shadow-lg text-white relative">
+                <div class="absolute top-6 right-6">
+                    <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold border border-white/30">
+                        CONFIRMED
+                    </span>
+                </div>
+
+                <p class="text-sm font-semibold text-white/90 mb-1">Your next shift</p>
+                <div class="flex items-center gap-2 text-sm font-bold opacity-90 mb-6">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Store #0012 - Rosemead</span>
+                </div>
+
+                <h1 class="text-5xl font-header font-bold mb-6">Wok Cook</h1>
+
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <div class="bg-black/20 backdrop-blur-sm rounded-lg px-3 py-3 border border-white/10 text-center flex flex-col justify-center">
+                        <p class="text-[10px] uppercase opacity-70 tracking-wider mb-1">Date</p>
+                        <p class="font-bold text-lg leading-none">Tomorrow</p>
+                    </div>
+                    <div class="bg-black/20 backdrop-blur-sm rounded-lg px-3 py-3 border border-white/10 text-center flex flex-col justify-center">
+                        <p class="text-[10px] uppercase opacity-70 tracking-wider mb-1">Time</p>
+                        <p class="font-bold text-sm leading-tight">10:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button class="btn-outline flex-1 py-3 rounded-full font-bold text-sm hover:bg-white hover:text-[#D2232A] transition-colors">
+                        DETAILS
+                    </button>
+                    <button id="swapBtn" onclick="triggerSwapShift()" class="bg-white text-[#D2232A] flex-1 py-3 rounded-full font-bold text-sm hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-exchange-alt"></i> REQUEST SWAP
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex justify-between items-end mb-3">
+                <h2 class="font-bold text-lg uppercase font-header text-[#1A1A1A]">Upcoming Schedule</h2>
+                <a href="#" class="text-[#D2232A] text-xs font-bold hover:underline">SEE FULL CALENDAR</a>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden divide-y divide-gray-100">
+                <div onclick="openSwapConfirm('Kitchen Help', 'Wed, Oct 23')" class="p-4 flex gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div class="flex flex-col items-center justify-center w-14 h-14 bg-[#EAEAEA] rounded-lg text-[#1A1A1A]">
+                        <span class="text-xs font-bold uppercase">Wed</span>
+                        <span class="text-xl font-bold font-header">23</span>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg text-[#1A1A1A]">Kitchen Help</h3>
+                                <p class="text-xs text-gray-500 font-semibold"><i class="fas fa-store mr-1"></i>Store #0012 - Rosemead</p>
+                            </div>
+                            <span class="text-xs font-bold text-gray-400">8 hrs</span>
+                        </div>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-bold text-[#1A1A1A]">4:00 PM - 10:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div onclick="openSwapConfirm('Counter Help', 'Fri, Oct 25')" class="p-4 flex gap-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div class="flex flex-col items-center justify-center w-14 h-14 bg-[#EAEAEA] rounded-lg text-[#1A1A1A]">
+                        <span class="text-xs font-bold uppercase">Fri</span>
+                        <span class="text-xl font-bold font-header">25</span>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg text-[#1A1A1A]">Counter Help</h3>
+                                <p class="text-xs text-gray-500 font-semibold"><i class="fas fa-store mr-1"></i>Store #0012 - Rosemead</p>
+                            </div>
+                            <span class="text-xs font-bold text-gray-400">6 hrs</span>
+                        </div>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-bold text-[#1A1A1A]">11:00 AM - 5:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="shiftsModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeAvailableShifts()"></div>
+        
+        <div class="absolute bottom-0 left-0 right-0 bg-[#F4F4F4] rounded-t-3xl p-6 transform transition-transform duration-300 translate-y-full md:relative md:translate-y-0 md:m-auto md:max-w-md md:rounded-2xl md:top-1/2 md:-translate-y-1/2 shadow-2xl">
+            <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-6 md:hidden"></div>
+            
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-header font-bold text-[#1A1A1A]">Available Shifts</h2>
+                <button onclick="closeAvailableShifts()" class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-500 shadow-sm">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-[#D2232A] transition-colors cursor-pointer group">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="bg-[#E4F5E6] text-[#00600F] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide">High Priority</span>
+                            <h3 class="font-bold text-lg text-[#1A1A1A] mt-1">Cashier</h3>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-xl font-header font-bold text-[#1A1A1A]">Oct 24</span>
+                            <span class="text-xs text-gray-500 font-bold uppercase">Thursday</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600 mb-4 font-semibold">
+                        <i class="far fa-clock mr-2"></i> 5:00 PM - 9:00 PM (4hrs)
+                    </div>
+                    <button onclick="requestShift('Cashier', 'Oct 24')" class="w-full bg-[#1A1A1A] text-white py-3 rounded-lg font-bold hover:bg-[#D2232A] transition-colors">
+                        REQUEST SHIFT
+                    </button>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-[#D2232A] transition-colors cursor-pointer">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-bold text-lg text-[#1A1A1A] mt-1">Drive-Thru</h3>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-xl font-header font-bold text-[#1A1A1A]">Oct 26</span>
+                            <span class="text-xs text-gray-500 font-bold uppercase">Saturday</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600 mb-4 font-semibold">
+                        <i class="far fa-clock mr-2"></i> 11:00 AM - 7:00 PM (8hrs)
+                    </div>
+                    <button onclick="requestShift('Drive-Thru', 'Oct 26')" class="w-full border-2 border-[#1A1A1A] text-[#1A1A1A] py-3 rounded-lg font-bold hover:bg-[#EAEAEA] transition-colors">
+                        REQUEST SHIFT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="swapConfirmModal" class="fixed inset-0 z-[55] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeSwapConfirm()"></div>
+        
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-[90%] max-w-sm rounded-2xl p-6 shadow-2xl transition-all">
+            <h3 class="text-xl font-header font-bold text-[#1A1A1A] mb-2">Request Swap?</h3>
+            <p class="text-gray-600 mb-6 text-sm">Do you want to request a swap for the <span id="swapRole" class="font-bold text-[#D2232A]"></span> shift on <span id="swapDate" class="font-bold text-[#D2232A]"></span>?</p>
+            
+            <div class="flex gap-3">
+                <button onclick="closeSwapConfirm()" class="flex-1 py-3 rounded-lg border-2 border-gray-200 font-bold text-gray-500 hover:bg-gray-50 transition-colors text-sm">
+                    CANCEL
+                </button>
+                <button id="confirmSwapBtn" onclick="processSwapRequest()" class="flex-1 py-3 rounded-lg bg-[#D2232A] text-white font-bold hover:bg-[#A31A20] transition-colors text-sm shadow-md">
+                    CONFIRM
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-[#1A1A1A] text-white px-4 py-3 rounded-lg shadow-xl z-[60] flex items-center gap-3 transition-all duration-300 -translate-y-[150%] opacity-0">
+        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="fas fa-check text-white text-sm"></i>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm">Success</h4>
+            <p class="text-xs text-white/80" id="toastMessage">Action completed successfully.</p>
+        </div>
+    </div>
+
+    <script>
+        // Modal Logic
+        function openAvailableShifts() {
+            const modal = document.getElementById('shiftsModal');
+            const content = modal.querySelector('div[class*="absolute bottom-0"]');
+            
+            modal.classList.remove('hidden');
+            // Small delay for animation
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeAvailableShifts() {
+            const modal = document.getElementById('shiftsModal');
+            const content = modal.querySelector('div[class*="absolute bottom-0"]');
+            
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Notification Logic
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            
+            toastMsg.textContent = message;
+            
+            toast.classList.remove('-translate-y-[150%]', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('-translate-y-[150%]', 'opacity-0');
+            }, 4000);
+        }
+
+        // Request Shift Action
+        function requestShift(role, date) {
+            // Simulate API call for requesting a shift
+            const btn = event.target;
+            const originalText = btn.innerText;
+            
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            // Using the Notification API logic for consistency, though this is a different action
+            // In a real app, this would be a different endpoint
+            setTimeout(() => {
+                closeAvailableShifts();
+                showToast(`Shift request for ${role} on ${date} sent to manager.`);
+                
+                // Reset button
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }, 1000);
+        }
+
+        // Logic for the new Upcoming Schedule Swap Modal
+        function openSwapConfirm(role, date) {
+            document.getElementById('swapRole').textContent = role;
+            document.getElementById('swapDate').textContent = date;
+            document.getElementById('swapConfirmModal').classList.remove('hidden');
+        }
+
+        function closeSwapConfirm() {
+            document.getElementById('swapConfirmModal').classList.add('hidden');
+        }
+
+        async function processSwapRequest() {
+            const btn = document.getElementById('confirmSwapBtn');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            btn.disabled = true;
+
+            // Reusing the same payload logic
+            const payload = {
+                "accessorIds": ["6894b616a155797a6ce78bb2"],
+                "channels": ["notificationCenter", "push"],
+                "content": {
+                    "en_US": { "text": "Shift Swap Initiated" },
+                    "de_DE": { "text": "New Learning Module available" }
+                },
+                "icon": {
+                    "en_US": { "type": "font", "char": "n" },
+                    "de_DE": { "type": "font", "char": "n" }
+                },
+                "image": {
+                    "en_US": { "type": "image", "href": "https://cdn-icons-png.flaticon.com/512/8677/8677730.png", "width": 600, "height": 400 },
+                    "de_DE": { "type": "image", "href": "https://cdn-icons-png.flaticon.com/512/8677/8677730.png", "width": 600, "height": 400 }
+                },
+                "link": "https://secure2.yourpayrollhr.com/ta/default.login"
+            };
+
+            try {
+                console.log("Sending Notification API Request via Modal...");
+                
+                // UNCOMMENTED API CALL
+                await fetch('https://app.staffbase.com/api/branch/notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic Njg5NGMzNzkyYjUxYTk3MWRhYzVhOGU4OmNNRTV6VmxwVVZsKkpQZzA2W35dZVE2Q15PdWFIME9QdllGaTBEM3sxXStfNykuc1J0WEk1fUs3Vl5JJGEkbSQ=',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                closeSwapConfirm();
+                showToast("Your shift change request has been sent to your manager. An update will be provided soon.");
+
+            } catch (error) {
+                console.error("API Error (Expected in demo):", error);
+                closeSwapConfirm();
+                showToast("Your shift change request has been sent to your manager. An update will be provided soon.");
+            } finally {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        }
+
+        // Swap Shift Logic (The main requirement)
+        async function triggerSwapShift() {
+            const btn = document.getElementById('swapBtn');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            btn.disabled = true;
+
+            const payload = {
+                "accessorIds": ["6894b616a155797a6ce78bb2"],
+                "channels": ["notificationCenter", "push"],
+                "content": {
+                    "en_US": { "text": "Shift Swap Initiated" },
+                    "de_DE": { "text": "New Learning Module available" }
+                },
+                "icon": {
+                    "en_US": { "type": "font", "char": "n" },
+                    "de_DE": { "type": "font", "char": "n" }
+                },
+                "image": {
+                    "en_US": { "type": "image", "href": "https://cdn-icons-png.flaticon.com/512/8677/8677730.png", "width": 600, "height": 400 },
+                    "de_DE": { "type": "image", "href": "https://cdn-icons-png.flaticon.com/512/8677/8677730.png", "width": 600, "height": 400 }
+                },
+                "link": "https://knowledgepass.kronos.com/auth/saml/login.php"
+            };
+
+            try {
+                
+                console.log("Sending Notification API Request...");
+                
+                // UNCOMMENTED API CALL
+                await fetch('https://app.staffbase.com/api/branch/notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic Njg5NGMzNzkyYjUxYTk3MWRhYzVhOGU4OmNNRTV6VmxwVVZsKkpQZzA2W35dZVE2Q15PdWFIME9QdllGaTBEM3sxXStfNykuc1J0WEk1fUs3Vl5JJGEkbSQ=',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+
+                showToast("Your shift change request has been sent to your manager. An update will be provided soon.");
+
+            } catch (error) {
+                console.error("API Error (Expected in demo):", error);
+                // Fallback for demo purposes
+                showToast("Your shift change request has been sent to your manager. An update will be provided soon");
+            } finally {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
